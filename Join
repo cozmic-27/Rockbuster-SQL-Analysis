@@ -1,0 +1,25 @@
+# Querry sorts cities in each country by descending order based on number of customers
+
+SELECT  ct.city, cr.country, COUNT(co.customer_id) AS number_of_customers_per_city
+  from customer co
+    INNER JOIN address ad ON co.address_id = ad.address_id
+    INNER JOIN city ct ON ad.city_id = ct.city_id
+    INNER JOIN country cr ON ct.country_id = cr.country_id
+WHERE cr.country IN (
+    SELECT cr.country FROM customer AS co
+      INNER JOIN address ad ON co.address_id = ad.address_id
+      INNER JOIN city ct ON ad.city_id = ct.city_id	
+      INNER JOIN country cr ON ct.country_id = cr.country_id
+
+GROUP BY 
+cr.country 
+ORDER BY COUNT(co.customer_id) DESC
+LIMIT 10)
+
+GROUP BY 
+ct.city,
+cr.country
+
+ORDER BY number_of_customers_per_city DESC
+limit 10;
+
