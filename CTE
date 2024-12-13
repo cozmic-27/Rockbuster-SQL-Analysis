@@ -1,0 +1,59 @@
+# CTE created to show top countries, all the customers in these countries and all of the top spending customers there
+
+WITH top_countries (country) AS 
+(SELECT e.country
+FROM customer b
+		JOIN address c ON c.address_id = b.address_id     
+		JOIN city d ON c.city_id = d.city_id			
+		JOIN country e ON e.country_id = d.country_id
+			GROUP BY e.country
+			ORDER BY COUNT (customer_id) DESC
+			LIMIT 10),
+top_cities (city) AS
+(SELECT d.city
+FROM customer b
+	JOIN address c ON c.address_id = b.address_id  
+	JOIN city d ON c.city_id = d.city_id			
+	JOIN country e ON e.country_id = d.country_id
+	WHERE e.country IN 
+	(SELECT e.country FROM top_countries)    
+			GROUP BY d.city			
+			ORDER BY COUNT (customer_id) DESC
+			LIMIT 10),
+top_customers (customer_id) AS
+( 
+SELECT 
+		b.customer_id,
+		b.first_name,
+		b.last_name,
+		SUM(a.amount) AS total_amount_payment				
+	FROM customer b											
+    JOIN payment a ON b.customer_id = a.customer_id
+	  JOIN address c ON c.address_id = b.address_id  
+	  JOIN city d ON c.city_id = d.city_id			
+  	JOIN country e ON e.country_id = d.country_id 
+	WHERE d.city IN											
+	(
+	SELECT city FROM top_cities
+	)	
+	GROUP BY
+		b.customer_id,
+		b.first_name,
+		b.last_name
+	
+		ORDER BY total_amount_payment DESC				 	
+		LIMIT 5)
+
+SELECT e.country,											
+COUNT(DISTINCT b.customer_id) AS all_customer_count, 		
+COUNT(DISTINCT top_customers.customer_id) AS top_customers_count	
+  FROM customer b 												
+    JOIN address c ON c.address_id = b.address_id  			
+    JOIN city d ON d.city_id = c.city_id
+    JOIN country e ON e.country_id = d.country_id
+LEFT JOIN top_customers ON top_customers.customer_id = b.customer_id 
+GROUP BY e.country
+ORDER BY 
+all_customer_count DESC,
+top_customers_count DESC
+LIMIT 10;	
