@@ -1,5 +1,5 @@
 # Rockbuster-SQL-Analysis
-## SQL is used to answer business and inventory questions for Rockbuster Video rental company in order to compete with bigger platforms like Netflix and Amazon. The video company plans to launch an online service and needs to look at consumer data to strategize how to do so effectively. 
+#### SQL is used to answer business and inventory questions for Rockbuster Video rental company in order to compete with bigger platforms like Netflix and Amazon. The video company plans to launch an online service and needs to look at consumer data to strategize how to do so effectively. Using SQL, data is analyed to answer key questions in regards to revenue, customer geographical location, rental durations, popular genres and so on. Using these insights, Rockbuster Stealth can craft more accurate customer profiles to drive revenue.
 
 ## Join Statement
 
